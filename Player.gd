@@ -98,8 +98,8 @@ func move_player(delta: float):
 	
 	if not machine_ray.is_colliding() and not machine_ray2.is_colliding() and not wall_ray.is_colliding():
 		self.position += self.direction * speed * delta
-		self.position.x = clamp(self.position.x, 0, self.screen_size.x - (self.frames.get_frame($AnimatedSprite.animation, 0).get_size().x / 2))
-		self.position.y = clamp(self.position.y, 0, self.screen_size.y - (self.frames.get_frame($AnimatedSprite.animation, 0).get_size().y / 2))
+		#self.position.x = clamp(self.position.x, 0, self.screen_size.x - (self.frames.get_frame($AnimatedSprite.animation, 0).get_size().x / 2))
+		#self.position.y = clamp(self.position.y, 0, self.screen_size.y - (self.frames.get_frame($AnimatedSprite.animation, 0).get_size().y / 2))
 	elif machine_ray.is_colliding() or machine_ray2.is_colliding():
 		print("MachineRay collided!")
 
