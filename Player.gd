@@ -2,24 +2,21 @@ extends KinematicBody2D
 
 signal hit
 
-export var speed = 200
+export var speed = 150
 export var step_sound = false
 onready var machine_ray = $MachineRayCast2D1
 onready var machine_ray2 = $MachineRayCast2D2
 onready var wall_ray = $WallRayCast
 
-var tile_size = Vector2(63, 58)
-var tile_pos_moved = 0
-
 var locked_mode
 var direction = Vector2.ZERO
 var cast_step = 20
 var initial_frame_index = 0
+var last_frame_index = 0
 
 var last_input_direction
 var input_directions: Array = []
-
-var steps = 0.0
+var steps = 0
 
 var state
 enum states {
@@ -106,8 +103,7 @@ func move_player(delta: float):
 	elif machine_ray.is_colliding() or machine_ray2.is_colliding():
 		#self.interaction_manager.set_active(machine_ray.get_collider().name)
 		print(machine_ray.get_collider().name)
-
-
+	
 func update_footsteps_sound():
 	if not self.step_sound:
 		return
@@ -120,7 +116,7 @@ func update_footsteps_sound():
 func update_footsteps_stop():
 	if self.locked_mode or self.stopped:
 		self.steps = 0
-
+	
 func _on_Player_body_entered(body):
 	self.hide()
 	self.emit_signal("hit")
