@@ -1,0 +1,17 @@
+[gd_scene format=2]
+
+[node name="DalogLayer" type="CanvasLayer"]
+
+[node name="DialogBox" type="NinePatchRect" parent="."]
+margin_left = 450.0
+margin_top = 223.0
+margin_right = 859.0
+margin_bottom = 320.0
+
+[node name="PlayerName" type="RichTextLabel" parent="DialogBox"]
+margin_right = 248.0
+margin_bottom = 78.0
+
+[node name="Text" type="RichTextLabel" parent="DialogBox"]
+margin_right = 40.0
+margin_bottom = 40.0
