@@ -11,12 +11,14 @@ onready var wall_ray = $WallRayCast
 var locked_mode
 var direction = Vector2.ZERO
 var cast_step = 20
-var initial_frame_index = 0
+var initial_frame_index = 3
 var last_frame_index = 0
+
+var animation_state_running = false
 
 var last_input_direction
 var input_directions: Array = []
-var steps = 0
+var steps: float = 0.0
 
 var state
 enum states {
@@ -36,6 +38,7 @@ func spawn(pos: Vector2, animation: String):
 	$AnimatedSprite.set_frame(0)
 	self.show();
 	self.locked_mode = true
+	self.animation_state_running = true
 	$CollisionShape2D.disabled = false
 
 func _process(delta):
@@ -61,28 +64,34 @@ func _unhandled_input(event):
 func process_player_movement(delta):
 	if self.input_directions.size() > 0:
 		self.last_input_direction = self.input_directions[-1]
-		if self.last_input_direction == KEY_DOWN:  self.direction = Vector2(0,  1)
-		if self.last_input_direction == KEY_UP:    self.direction = Vector2(0, -1)
-		if self.last_input_direction == KEY_LEFT:  self.direction = Vector2(-1, 0)
-		if self.last_input_direction == KEY_RIGHT: self.direction = Vector2(1,  0)
+		if self.last_input_direction == KEY_DOWN:
+			self.direction = Vector2(0,  1)
+		if self.last_input_direction == KEY_UP:
+			self.direction = Vector2(0, -1)
+		if self.last_input_direction == KEY_LEFT:
+			self.direction = Vector2(-1, 0)
+		if self.last_input_direction == KEY_RIGHT:
+			self.direction = Vector2(1,  0)
 	
 	if self.direction != Vector2.ZERO:
 		self.determine_animation()
 		self.move_player(delta)
 	else:
 		$AnimatedSprite.set_frame(self.initial_frame_index)
-		
+		self.steps = 0.0
+
 func determine_animation():
-	match self.direction:
-		Vector2(-1, 0), Vector2(1, 0):
-			$AnimatedSprite.animation = "walkx"
-			$AnimatedSprite.flip_h = self.direction.x < 0
-		Vector2(0, 1):
-			$AnimatedSprite.animation = "down"
-		Vector2(0, -1):
-			$AnimatedSprite.animation = "up"
-	$AnimatedSprite.play()
-	
+	if self.animation_state_running:
+		match self.direction:
+			Vector2(-1, 0), Vector2(1, 0):
+				$AnimatedSprite.animation = "walkx"
+				$AnimatedSprite.flip_h = self.direction.x < 0
+			Vector2(0, 1):
+				$AnimatedSprite.animation = "down"
+			Vector2(0, -1):
+				$AnimatedSprite.animation = "up"
+		$AnimatedSprite.play()
+
 
 func move_player(delta: float):
 	if self.direction == Vector2(-1, 0):
@@ -98,30 +107,25 @@ func move_player(delta: float):
 	wall_ray.force_raycast_update()
 	
 	if not machine_ray.is_colliding() and not machine_ray2.is_colliding() and not wall_ray.is_colliding():
+		self.animation_state_running = true
 		self.position += self.direction * speed * delta
-		self.update_footsteps_sound()
+		self.update_footsteps_sound(delta)
 	elif machine_ray.is_colliding() or machine_ray2.is_colliding():
-		#self.interaction_manager.set_active(machine_ray.get_collider().name)
-		print(machine_ray.get_collider().name)
-	
-func update_footsteps_sound():
+		$AnimatedSprite.set_frame(self.initial_frame_index)
+		self.steps = 0.0
+		
+func update_footsteps_sound(delta):
 	if not self.step_sound:
 		return
-	self.steps += 10.0
-	if self.steps >= self.speed * 1.5:
+	self.steps += 3 * delta
+	if self.steps >= 1.0:
 		$Footsteps.play()
 		self.steps = 0.0
-	print(self.steps)
 
-func update_footsteps_stop():
-	if self.locked_mode or self.stopped:
-		self.steps = 0
-	
 func _on_Player_body_entered(body):
 	self.hide()
 	self.emit_signal("hit")
 	$CollisionShape2D.set_deferred("disabled", true)
-
 
 func get_locked_mode():
 	return self.locked_mode

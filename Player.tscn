@@ -14,20 +14,20 @@
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 2 ), ExtResource( 5 ), ExtResource( 4 ) ],
+"frames": [ ExtResource( 5 ), ExtResource( 4 ), ExtResource( 2 ) ],
 "loop": true,
 "name": "up",
-"speed": 6.0
+"speed": 7.0
 }, {
-"frames": [ ExtResource( 6 ), ExtResource( 8 ), ExtResource( 9 ) ],
-"loop": true,
-"name": "down",
-"speed": 6.0
-}, {
-"frames": [ ExtResource( 3 ), ExtResource( 7 ), ExtResource( 10 ) ],
+"frames": [ ExtResource( 7 ), ExtResource( 10 ), ExtResource( 3 ) ],
 "loop": true,
 "name": "walkx",
-"speed": 6.0
+"speed": 7.0
+}, {
+"frames": [ ExtResource( 8 ), ExtResource( 9 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "down",
+"speed": 7.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
@@ -40,6 +40,7 @@ step_sound = true
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
 animation = "walkx"
+frame = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 2 )

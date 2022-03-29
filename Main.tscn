@@ -320,9 +320,10 @@ position = Vector2( 250, 257 )
 shape = SubResource( 15 )
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
+position = Vector2( 504, 348 )
 
 [node name="StartPosition" type="Position2D" parent="."]
-position = Vector2( 504, 370 )
+position = Vector2( 504, 348 )
 
 [node name="DialogManager" type="Node" parent="."]
 script = ExtResource( 14 )
