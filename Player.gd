@@ -7,6 +7,7 @@ export var step_sound = false
 onready var machine_ray = $MachineRayCast2D1
 onready var machine_ray2 = $MachineRayCast2D2
 onready var wall_ray = $WallRayCast
+onready var anim_sprites = $AnimatedSprite
 
 var locked_mode
 var direction = Vector2.ZERO
@@ -34,8 +35,8 @@ func _ready():
 	
 func spawn(pos: Vector2, animation: String):
 	self.position = pos
-	$AnimatedSprite.animation = animation
-	$AnimatedSprite.set_frame(0)
+	self.anim_sprites.animation = animation
+	self.anim_sprites.set_frame(0)
 	self.show();
 	self.locked_mode = true
 	self.animation_state_running = true
@@ -46,8 +47,8 @@ func _process(delta):
 	if not self.locked_mode:
 		self.process_player_movement(delta)
 	else:
-		$AnimatedSprite.stop()
-		$AnimatedSprite.set_frame(self.initial_frame_index)
+		self.anim_sprites.stop()
+		self.anim_sprites.set_frame(self.initial_frame_index)
 
 # The idea here is to get the last key pushed to the array and use it as a direction input
 func _unhandled_input(event):
@@ -56,7 +57,7 @@ func _unhandled_input(event):
 			if event.pressed:
 				if !self.input_directions.has(event.scancode):
 					self.input_directions.push_back(event.scancode)
-					$AnimatedSprite.set_frame(self.initial_frame_index)
+					self.anim_sprites.set_frame(self.initial_frame_index)
 			else:
 				if self.input_directions.has(event.scancode):
 					self.input_directions.pop_at(self.input_directions.find(event.scancode, 0))
@@ -77,20 +78,20 @@ func process_player_movement(delta):
 		self.determine_animation()
 		self.move_player(delta)
 	else:
-		$AnimatedSprite.set_frame(self.initial_frame_index)
+		self.anim_sprites.set_frame(self.initial_frame_index)
 		self.steps = 0.0
 
 func determine_animation():
 	if self.animation_state_running:
 		match self.direction:
 			Vector2(-1, 0), Vector2(1, 0):
-				$AnimatedSprite.animation = "walkx"
-				$AnimatedSprite.flip_h = self.direction.x < 0
+				self.anim_sprites.animation = "walkx"
+				self.anim_sprites.flip_h = self.direction.x < 0
 			Vector2(0, 1):
-				$AnimatedSprite.animation = "down"
+				self.anim_sprites.animation = "down"
 			Vector2(0, -1):
-				$AnimatedSprite.animation = "up"
-		$AnimatedSprite.play()
+				self.anim_sprites.animation = "up"
+		self.anim_sprites.play()
 
 
 func move_player(delta: float):
@@ -111,7 +112,7 @@ func move_player(delta: float):
 		self.position += self.direction * speed * delta
 		self.update_footsteps_sound(delta)
 	elif machine_ray.is_colliding() or machine_ray2.is_colliding():
-		$AnimatedSprite.set_frame(self.initial_frame_index)
+		self.anim_sprites.set_frame(self.initial_frame_index)
 		self.steps = 0.0
 		
 func update_footsteps_sound(delta):
