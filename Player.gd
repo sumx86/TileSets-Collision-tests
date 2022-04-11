@@ -12,14 +12,14 @@ onready var anim_sprites = $AnimatedSprite
 var locked_mode
 var direction = Vector2.ZERO
 var cast_step = 20
-var initial_frame_index = 3
+var initial_frame_index = 0
 var last_frame_index = 0
 
 var animation_state_running = false
 
 var last_input_direction
 var input_directions: Array = []
-var steps: float = 0.0
+var steps: float = 0.5
 
 var state
 enum states {
@@ -48,7 +48,7 @@ func _process(delta):
 		self.process_player_movement(delta)
 	else:
 		self.anim_sprites.stop()
-		self.anim_sprites.set_frame(self.initial_frame_index)
+		self.anim_sprites.set_frame(1)
 
 # The idea here is to get the last key pushed to the array and use it as a direction input
 func _unhandled_input(event):
@@ -57,7 +57,7 @@ func _unhandled_input(event):
 			if event.pressed:
 				if !self.input_directions.has(event.scancode):
 					self.input_directions.push_back(event.scancode)
-					self.anim_sprites.set_frame(self.initial_frame_index)
+					self.anim_sprites.set_frame(0)
 			else:
 				if self.input_directions.has(event.scancode):
 					self.input_directions.pop_at(self.input_directions.find(event.scancode, 0))
@@ -78,8 +78,8 @@ func process_player_movement(delta):
 		self.determine_animation()
 		self.move_player(delta)
 	else:
-		self.anim_sprites.set_frame(self.initial_frame_index)
-		self.steps = 0.0
+		self.anim_sprites.set_frame(1)
+		self.steps = 0.5
 
 func determine_animation():
 	if self.animation_state_running:
@@ -112,7 +112,7 @@ func move_player(delta: float):
 		self.position += self.direction * speed * delta
 		self.update_footsteps_sound(delta)
 	elif machine_ray.is_colliding() or machine_ray2.is_colliding():
-		self.anim_sprites.set_frame(self.initial_frame_index)
+		self.anim_sprites.set_frame(1)
 		self.steps = 0.0
 		
 func update_footsteps_sound(delta):
