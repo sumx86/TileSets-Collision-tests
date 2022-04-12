@@ -4,6 +4,7 @@ var thread
 var server
 var client
 var bytes
+var connection_status
 
 func _ready():
 	self.server = TCP_Server.new()
@@ -18,7 +19,8 @@ func _ready():
 func _process(delta):
 	if self.server.is_connection_available():
 		self.client = self.server.take_connection()
-		if self.client.is_connected_to_host():
+		self.connection_status = self.client.get_status()
+		if self.connection_status == StreamPeerTCP.STATUS_CONNECTED:
 			self.bytes = self.client.get_available_bytes()
 			if self.bytes > 0:
 				print(self.client.get_string(self.bytes))

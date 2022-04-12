@@ -38,9 +38,10 @@ def send_arp(ip):
 
 def receive_arp(packet):
     if packet[ARP].op == ARP_REPLY:
-        src_ip = packet.psrc
-        src_hw = packet.hwsrc
-        send_tcp_data(src_ip + " - " + src_hw)
+        if "0.0.0.0" in packet.pdst or LOCAL_IP_ADDRESS in packet.pdst:
+            src_ip = packet.psrc
+            src_hw = packet.hwsrc
+            send_tcp_data(src_ip + " - " + src_hw)
 
 def receiver():
     sniff(filter="arp", iface=ADAPTER, prn=receive_arp)
