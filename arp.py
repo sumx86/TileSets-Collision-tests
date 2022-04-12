@@ -16,6 +16,8 @@ socket_initialized = False
 sock = None
 packet_count = 1
 
+mutex = threading.Lock()
+
 def init_sock(port, addr):
     global sock
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -32,7 +34,9 @@ def send_tcp_data(data):
 def send_arp(ip):
     global packet_count
     sendp(Ether(dst='ff:ff:ff:ff:ff') / ARP(pdst=ip), iface=ADAPTER)
+    mutex.acquire()
     send_tcp_data("Packet - " + str(packet_count))
+    mutex.release()
     packet_count += 1
     time.sleep(0.2)
 
@@ -41,7 +45,9 @@ def receive_arp(packet):
         if "0.0.0.0" in packet.pdst or LOCAL_IP_ADDRESS in packet.pdst:
             src_ip = packet.psrc
             src_hw = packet.hwsrc
-            send_tcp_data(src_ip + " - " + src_hw)
+            mutex.acquire()
+            send_tcp_data(src_ip + "#" + src_hw)
+            mutex.release()
 
 def receiver():
     sniff(filter="arp", iface=ADAPTER, prn=receive_arp)
@@ -50,5 +56,5 @@ if __name__ == "__main__":
     thread = threading.Thread(target=receiver, args=())
     thread.start()
     time.sleep(2)
-    for i in range(1, 255):
+    for i in range(1, 256):
         send_arp("192.168.0." + str(i))
