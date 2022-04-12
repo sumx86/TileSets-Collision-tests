@@ -9,7 +9,7 @@ var packets_sent = 1
 var received_data = ""
 
 var hosts = []
-var white_list = {}
+var white_list = []
 var white_list_initialized: bool = false
 
 const SERVER_IP = "127.0.0.1"
@@ -21,28 +21,9 @@ func _ready():
 	if self.server.listen(self.SERVER_PORT, self.SERVER_IP) == 0:
 		print("Server started on port " + str(self.SERVER_PORT) + " with ip address " + str(self.SERVER_IP) + "!")
 		self.set_process(true)
-		
+	
+	self.initialize_white_list()
 	$Player.spawn($StartPosition.position, "down")
-
-func initialize_white_list():
-	var file = File.new()
-	var error = file.open(WHITE_LIST_FILE, File.READ)
-	if error != OK:
-		print("Error opening file -> ", error)
-		return
-	
-	if file.get_len() <= 0:
-		print("File " + WHITE_LIST_FILE + " is empty!")
-		return
-	
-	while true:
-		var entry = file.get_line().split("-", false, 0)
-		if entry.size() <= 0:
-			break
-		self.white_list["ipaddr"] = entry[0]
-		self.white_list["hwaddr"] = entry[1]
-		if not self.white_list_initialized:
-			self.white_list_initialized = true
 
 func _process(delta):
 	if self.server.is_connection_available():
@@ -58,16 +39,38 @@ func handle_received_data():
 	if "Packet - " in self.received_data:
 		self.packets_sent = int(self.received_data.split(" - ", false, 0)[1])
 	else:
-		var host = self.new_host(self.received_data.split("#", false, 0))
-		self.hosts.append(host)
+		self.add_host(self.received_data.split("#", false, 0))
 		print(self.hosts)
-		
+
 func find_duplicate():
 	pass
 	
-func new_host(data):
+func add_host(data):
 	var host = {"ipaddr":data[0], "hwaddr":data[1], "trusted":false}
-	for entry in self.white_list:
-		if entry["ipaddr"] == host["ipaddr"] and entry["hwaddr"] == host["hwaddr"]:
-			host['trusted'] = true
-	return host
+	if self.white_list_initialized:
+		for entry in self.white_list:
+			if entry == host["hwaddr"]:
+				host['trusted'] = true
+	self.hosts.append(host)
+
+func load_file(fname):
+	var file = File.new()
+	var error = file.open(fname, File.READ)
+	if error != OK:
+		print("Error opening file -> ", error)
+		return null
+	
+	if file.get_len() <= 0:
+		print("File " + fname + " is empty!")
+		return null
+	return file
+
+func initialize_white_list():
+	var file = self.load_file(WHITE_LIST_FILE)
+	if file != null:
+		while not file.eof_reached():
+			var entry = file.get_line().strip_edges()
+			if entry.length() > 0:
+				self.white_list.append(entry)
+				if not self.white_list_initialized:
+					self.white_list_initialized = true
