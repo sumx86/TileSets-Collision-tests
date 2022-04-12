@@ -9,11 +9,6 @@ var packets_sent = 1
 var received_data = ""
 
 var hosts = []
-var host = {
-	"ip":"",
-	"hw":"",
-	"trusted":true
-}
 var white_list = []
 
 const SERVER_IP = "127.0.0.1"
@@ -41,16 +36,16 @@ func handle_received_data():
 	if "Packet - " in self.received_data:
 		self.packets_sent = int(self.received_data.split(" - ", false, 0)[1])
 	else:
-		self.new_host(self.received_data)
-		self.hosts.append(self.host)
+		var host = self.new_host(self.received_data.split("#", false, 0))
+		self.hosts.append(host)
 		print(self.hosts)
 		
 func find_duplicate():
 	pass
 	
 func new_host(data):
-	var _data = data.split("#", false, 0)
-	self.host.ip = _data[0]
-	self.host.hw = _data[1]
-	if not self.host in self.white_list:
-		self.host.trusted = false
+	var host = {"ipaddr":data[0], "hwaddr":data[1], "trusted":false}
+	for entry in self.white_list:
+		if entry["ipaddr"] == host["ipaddr"] and entry["hwaddr"] == host["hwaddr"]:
+			host['trusted'] = true
+	return host
