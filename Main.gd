@@ -9,10 +9,12 @@ var packets_sent = 1
 var received_data = ""
 
 var hosts = []
-var white_list = []
+var white_list = {}
+var white_list_initialized: bool = false
 
 const SERVER_IP = "127.0.0.1"
 const SERVER_PORT = 3000
+const WHITE_LIST_FILE = "white-list.txt"
 
 func _ready():
 	self.server = TCP_Server.new()
@@ -21,6 +23,26 @@ func _ready():
 		self.set_process(true)
 		
 	$Player.spawn($StartPosition.position, "down")
+
+func initialize_white_list():
+	var file = File.new()
+	var error = file.open(WHITE_LIST_FILE, File.READ)
+	if error != OK:
+		print("Error opening file -> ", error)
+		return
+	
+	if file.get_len() <= 0:
+		print("File " + WHITE_LIST_FILE + " is empty!")
+		return
+	
+	while true:
+		var entry = file.get_line().split("-", false, 0)
+		if entry.size() <= 0:
+			break
+		self.white_list["ipaddr"] = entry[0]
+		self.white_list["hwaddr"] = entry[1]
+		if not self.white_list_initialized:
+			self.white_list_initialized = true
 
 func _process(delta):
 	if self.server.is_connection_available():
