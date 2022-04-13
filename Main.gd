@@ -1,5 +1,6 @@
 extends Node
 
+export(PackedScene) var arp_bot
 var server
 var client
 var bytes
@@ -52,6 +53,7 @@ func add_host(data):
 			if entry == host["hwaddr"]:
 				host['trusted'] = true
 	self.hosts.append(host)
+	self.add_child(self.arp_bot.instance().set_data(host, Vector2(0, 0)))
 
 func load_file(fname):
 	var file = File.new()
