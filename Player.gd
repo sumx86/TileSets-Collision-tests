@@ -21,12 +21,6 @@ var last_input_direction
 var input_directions: Array = []
 var steps: float = 0.5
 
-var state
-enum states {
-	IDLE,
-	INTERACT,
-	MOVE
-}
 enum directions {UP, DOWN, LEFT, RIGHT}
 
 # Called when the node enters the scene tree for the first time.

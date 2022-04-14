@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Map/TextBoxes/textboxxx.png" type="Texture" id=1]
+
+[node name="BotTextBox" type="CanvasLayer"]
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 483, 612 )
+scale = Vector2( 0.383633, 0.357188 )
+texture = ExtResource( 1 )

@@ -17,3 +17,5 @@ shape = SubResource( 1 )
 position = Vector2( 520, 349 )
 scale = Vector2( 0.7, 0.7 )
 texture = ExtResource( 2 )
+
+[connection signal="body_entered" from="." to="." method="_on_ArpBot_body_entered"]
