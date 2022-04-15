@@ -18,4 +18,4 @@ func TransitionEndedUnlockPlayer():
 func TransitionEnded():
 	$CurrentScene.get_child(0).queue_free()
 	$CurrentScene.add_child(load(self.next_scene).instance())
-	self.RunTransition("FadeIn")
+	self.RunTransition("FadeInBotsMonitor")
