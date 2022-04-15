@@ -326,14 +326,14 @@ texture = ExtResource( 15 )
 position = Vector2( 250, 257 )
 shape = SubResource( 15 )
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Computer" type="Area2D" parent="."]
 
-[node name="Sprite" type="Sprite" parent="Area2D"]
+[node name="Sprite" type="Sprite" parent="Computer"]
 position = Vector2( 481, 395 )
 scale = Vector2( 0.282496, 0.25 )
 texture = ExtResource( 19 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Computer"]
 position = Vector2( 481, 381 )
 shape = SubResource( 17 )
 

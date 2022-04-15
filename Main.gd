@@ -9,6 +9,8 @@ var total_packets = 255
 var packets_sent = 1
 var received_data = ""
 
+onready var scene_manager = self.get_parent()
+
 var hosts = []
 var white_list = []
 var white_list_initialized: bool = false

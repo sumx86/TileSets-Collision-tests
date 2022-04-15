@@ -108,6 +108,7 @@ func move_player(delta: float):
 	elif machine_ray.is_colliding() or machine_ray2.is_colliding():
 		self.anim_sprites.set_frame(1)
 		self.steps = 0.0
+		self.get_node(NodePath("/root/SceneManager")).RunTransition("FadeOut")
 		
 func update_footsteps_sound(delta):
 	if not self.step_sound:
