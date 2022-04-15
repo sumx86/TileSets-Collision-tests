@@ -113,7 +113,8 @@ func move_player(delta: float):
 		self.steps = 0.0
 		var collider = machine_ray.get_collider()
 		if collider:
-			self.scene_manager.go_to_scene("BotsMonitorScene.tscn")
+			if "Computer" in collider.to_string():
+				self.scene_manager.go_to_scene("BotsMonitorScene.tscn")
 		
 func update_footsteps_sound(delta):
 	if not self.step_sound:
