@@ -65,7 +65,6 @@ collide_with_bodies = false
 cast_to = Vector2( 0, 23 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
-current = true
 drag_margin_h_enabled = true
 drag_margin_v_enabled = true
 smoothing_speed = 10.0
