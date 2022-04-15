@@ -1,6 +1,7 @@
 extends KinematicBody2D
 
 signal hit
+signal computer_touched
 
 export var speed = 150
 export var step_sound = false
@@ -8,6 +9,7 @@ onready var machine_ray = $MachineRayCast2D1
 onready var machine_ray2 = $MachineRayCast2D2
 onready var wall_ray = $WallRayCast
 onready var anim_sprites = $AnimatedSprite
+onready var scene_manager = self.get_node(NodePath("/root/SceneManager"))
 
 var locked_mode
 var direction = Vector2.ZERO
@@ -105,10 +107,13 @@ func move_player(delta: float):
 		self.animation_state_running = true
 		self.position += self.direction * speed * delta
 		self.update_footsteps_sound(delta)
+		
 	elif machine_ray.is_colliding() or machine_ray2.is_colliding():
 		self.anim_sprites.set_frame(1)
 		self.steps = 0.0
-		self.get_node(NodePath("/root/SceneManager")).RunTransition("FadeOut")
+		var collider = machine_ray.get_collider()
+		if collider:
+			self.scene_manager.go_to_scene("BotsMonitorScene.tscn")
 		
 func update_footsteps_sound(delta):
 	if not self.step_sound:
