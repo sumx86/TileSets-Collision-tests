@@ -5,6 +5,10 @@ from scapy.layers.l2 import ARP, Ether
 import time
 import threading
 import socket
+from optparse import OptionParser
+
+# --bcast --who-has=[ip]
+# --spoof --ip=[ip] --gateway=[gateway] --mac=[mac]
 
 ARP_REPLY = 0x02
 ADAPTER = "Ethernet"
@@ -17,6 +21,18 @@ sock = None
 packet_count = 1
 
 mutex = threading.Lock()
+
+parser = OptionParser()
+parser.add_option("--bcast",   action='store', dest='bcast',   type='string', help="Send broadcast arp")
+parser.add_option("--who-has", action='store', dest='who_has', type='string', help="Send broadcast arp")
+
+parser.add_option("--spoof",   action='store', dest='spoof',   type='string', help="Arp spoof a specific address")
+parser.add_option("--ip",      action='store', dest='ip',      type='string', help="Arp spoof a specific address")
+parser.add_option("--gateway", action='store', dest='gateway', type='string', help="Arp spoof a specific address")
+parser.add_option("--mac",     action='store', dest='mac',     type='string', help="Arp spoof a specific address")
+(options, args) = parser.parse_args()
+
+print(options.spoof)
 
 def init_sock(port, addr):
     global sock
