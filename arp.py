@@ -9,7 +9,7 @@ from optparse import OptionParser
 from sock import *
 
 # --bcast --who-has=[ip]
-# --spoof --ip=[ip] --gateway=[gateway] --mac=[mac]
+# --spoof --ip=[ip] --tmac=[mac] --gateway=[gateway] --smac=[mac]
 
 ARP_REPLY = 0x02
 ADAPTER = "Ethernet"
