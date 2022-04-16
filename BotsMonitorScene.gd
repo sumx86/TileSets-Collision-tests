@@ -40,18 +40,24 @@ func handle_received_data():
 	else:
 		self.add_host(self.received_data.split("#", false, 0))
 		print(self.hosts)
-
-func find_duplicate():
-	pass
 	
 func add_host(data):
 	var host = {"ipaddr":data[0], "hwaddr":data[1], "trusted":false}
 	if self.white_list_initialized:
 		for entry in self.white_list:
-			if entry == host["hwaddr"]:
+			var _entry = entry.split("-", false, 0)
+			if _entry[0] == host["ipaddr"] and _entry[1] == host["hwaddr"]:
 				host['trusted'] = true
-	self.hosts.append(host)
-	self.add_child(self.arp_bot.instance().set_data(host, Vector2(0, 0)))
+
+	if not self.has_host(host):
+		self.hosts.append(host)
+		$MonitorLayer.add_child(self.arp_bot.instance().set_data(host, Vector2(0, 0)))
+
+func has_host(host):
+	for entry in self.hosts:
+		if entry['hwaddr'] == host['hwaddr']:
+			return true
+	return false
 
 func load_file(fname):
 	var file = File.new()

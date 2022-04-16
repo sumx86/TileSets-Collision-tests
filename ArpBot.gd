@@ -21,7 +21,3 @@ func set_data(data, _position: Vector2):
 
 func get_data():
 	return self._data
-
-func _on_ArpBot_body_entered(body):
-	if body.name == "Player":
-		pass

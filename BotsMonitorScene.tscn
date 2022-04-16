@@ -13,14 +13,14 @@ font_data = ExtResource( 2 )
 script = ExtResource( 3 )
 arp_bot = ExtResource( 4 )
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="MonitorLayer" type="CanvasLayer" parent="."]
 
-[node name="Sprite" type="Sprite" parent="CanvasLayer"]
+[node name="Sprite" type="Sprite" parent="MonitorLayer"]
 position = Vector2( 737, 449 )
 scale = Vector2( 1.3, 1.3 )
 texture = ExtResource( 1 )
 
-[node name="ScanningProgress" type="Label" parent="CanvasLayer"]
+[node name="ScanningProgress" type="Label" parent="MonitorLayer"]
 margin_left = 557.0
 margin_top = 204.0
 margin_right = 902.0

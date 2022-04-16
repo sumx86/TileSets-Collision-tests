@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Main.gd" type="Script" id=2]
@@ -15,7 +15,6 @@
 [ext_resource path="res://Map/CybepunkTiles/Walls/kanjiboard.png" type="Texture" id=13]
 [ext_resource path="res://Map/CybepunkTiles/Machines/Machine1.png" type="Texture" id=15]
 [ext_resource path="res://Map/CybepunkTiles/Walls/WallCyn.png" type="Texture" id=16]
-[ext_resource path="res://ArpBot.tscn" type="PackedScene" id=18]
 [ext_resource path="res://computertable.png" type="Texture" id=19]
 
 [sub_resource type="ConvexPolygonShape2D" id=11]
@@ -284,7 +283,6 @@ extents = Vector2( 54, 30 )
 
 [node name="Main" type="Node"]
 script = ExtResource( 2 )
-arp_bot = ExtResource( 18 )
 
 [node name="Room" type="TileMap" parent="."]
 scale = Vector2( 1.5, 1.5 )
