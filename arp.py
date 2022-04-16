@@ -44,7 +44,7 @@ if options.spoof:
     if not options.ip or not options.gateway or not options.tmac or not options.smac:
         print_usage()
     else:
-        pass
+        spoof_mode = True
 if options.bcast:
     if not options.who_has:
         global_broadcast = True
