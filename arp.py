@@ -24,7 +24,7 @@ mutex = threading.Lock()
 
 def print_usage():
     print("python arp.py --bcast --who-has=[IP]")
-    print("python arp.py --spoof --ip=[IP] --gateway=[IP] --mac=[xx:xx:xx:xx:xx]")
+    print("python arp.py --ip=[ip] --tmac=[mac] --gateway=[gateway] --smac=[xx:xx:xx:xx:xx]")
 
 parser = OptionParser()
 # broadcast options
