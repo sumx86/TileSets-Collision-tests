@@ -10,6 +10,11 @@ var packets_sent = 1
 var received_data = ""
 var arp_pid
 
+var bot_x_offset = -120
+var bot_y_offset = 0
+var bot_x_step = 75
+var bot_y_step = 0
+
 var hosts = []
 var white_list = []
 var white_list_initialized: bool = false
@@ -60,7 +65,8 @@ func add_host(data):
 
 	if not self.has_host(host):
 		self.hosts.append(host)
-		$MonitorLayer.add_child(self.arp_bot.instance().set_data(host, Vector2(0, 0)))
+		$MonitorLayer/BotsSection.add_child(self.arp_bot.instance().set_data(host, Vector2(self.bot_x_offset, self.bot_y_offset)))
+		self.bot_x_offset += self.bot_x_step
 
 func has_host(host):
 	for entry in self.hosts:

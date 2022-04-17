@@ -26,6 +26,13 @@ position = Vector2( 737, 449 )
 scale = Vector2( 1.3, 1.3 )
 texture = ExtResource( 1 )
 
+[node name="ColorRect" type="ColorRect" parent="MonitorLayer"]
+margin_left = 341.0
+margin_top = 188.0
+margin_right = 1131.0
+margin_bottom = 604.0
+color = Color( 0.196078, 0.313726, 0.364706, 1 )
+
 [node name="ScanningProgress" type="Label" parent="MonitorLayer"]
 margin_left = 557.0
 margin_top = 204.0
@@ -62,3 +69,15 @@ valign = 1
 __meta__ = {
 "_editor_description_": ""
 }
+
+[node name="BotsSection" type="CanvasLayer" parent="MonitorLayer"]
+
+[node name="ColorRect" type="ColorRect" parent="MonitorLayer/BotsSection"]
+margin_left = 341.0
+margin_top = 348.0
+margin_right = 1131.0
+margin_bottom = 604.0
+color = Color( 0.196078, 0.313726, 0.364706, 1 )
+
+[node name="InitialBotPosition" type="Position2D" parent="MonitorLayer/BotsSection"]
+position = Vector2( 382, 385 )
