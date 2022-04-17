@@ -8,6 +8,7 @@ var connection_status
 var total_packets = 255
 var packets_sent = 1
 var received_data = ""
+var arp_pid
 
 var hosts = []
 var white_list = []
@@ -23,6 +24,10 @@ func _ready():
 		print("Server started on port " + str(self.SERVER_PORT) + " with ip address " + str(self.SERVER_IP) + "!")
 		self.set_process(true)
 	self.initialize_white_list()
+	self.run_arp(["arp.py", "--bcast"])
+
+func run_arp(options):
+	self.arp_pid = OS.execute("python", options, false)
 
 func _process(delta):
 	if self.server.is_connection_available():
@@ -40,6 +45,7 @@ func handle_received_data():
 		$MonitorLayer/PacketsSent.text = "Packets sent " + str(self.packets_sent)
 		if self.packets_sent == self.total_packets:
 			$MonitorLayer/PacketsSent.text = "Done!"
+			OS.kill(self.arp_pid)
 	else:
 		self.add_host(self.received_data)
 		print(self.hosts)
