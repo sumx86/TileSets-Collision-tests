@@ -44,7 +44,7 @@ func handle_received_data():
 		self.packets_sent = int(self.received_data[1])
 		$MonitorLayer/PacketsSent.text = "Packets sent " + str(self.packets_sent)
 		if self.packets_sent == self.total_packets:
-			$MonitorLayer/PacketsSent.text = "Done!"
+			$MonitorLayer/Status.text = "Done!"
 			OS.kill(self.arp_pid)
 	else:
 		self.add_host(self.received_data)
@@ -64,7 +64,8 @@ func add_host(data):
 
 func has_host(host):
 	for entry in self.hosts:
-		if entry['hwaddr'] == host['hwaddr']:
+		if entry['ipaddr'] == host['ipaddr'] and\
+		   entry['hwaddr'] == host['hwaddr']:
 			return true
 	return false
 
