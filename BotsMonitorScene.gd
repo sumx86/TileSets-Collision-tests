@@ -34,11 +34,14 @@ func _process(delta):
 				self.handle_received_data()
 
 func handle_received_data():
-	self.received_data = self.client.get_string(self.bytes)
-	if "Packet - " in self.received_data:
-		self.packets_sent = int(self.received_data.split(" - ", false, 0)[1])
+	self.received_data = self.client.get_string(self.bytes).split(" - ", false, 0)
+	if self.received_data[0] == "Packet":
+		self.packets_sent = int(self.received_data[1])
+		$MonitorLayer/PacketsSent.text = "Packets sent " + str(self.packets_sent)
+		if self.packets_sent == self.total_packets:
+			$MonitorLayer/PacketsSent.text = "Done!"
 	else:
-		self.add_host(self.received_data.split("#", false, 0))
+		self.add_host(self.received_data)
 		print(self.hosts)
 	
 func add_host(data):

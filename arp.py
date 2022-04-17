@@ -70,7 +70,7 @@ def receive_arp(packet):
             src_ip = packet.psrc
             src_hw = packet.hwsrc
             mutex.acquire()
-            send_tcp_data(src_ip + "#" + src_hw)
+            send_tcp_data(src_ip + " - " + src_hw)
             mutex.release()
 
 def receiver():
